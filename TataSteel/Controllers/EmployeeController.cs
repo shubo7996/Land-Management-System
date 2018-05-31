@@ -58,40 +58,55 @@ namespace TataSteel.Controllers
         }
 
         // GET: Employee/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
-            return View();
+            var document = Context.employees.FindOneById(new ObjectId(id)); 
+            return View(document);
+            
         }
 
         // POST: Employee/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(string id,EmployeeModel employeeModel)
         {
             try
-            {
-                // TODO: Add update logic here
+            { 
+                employeeModel.ID = new ObjectId(id);
+                var employeeObjectId = Query<EmployeeModel>.EQ(p => p.ID, new ObjectId(id));
+                var collection = Context.employees;
+                var result = collection.Update(employeeObjectId, Update.Replace(employeeModel), UpdateFlags.None);
+                   
 
+                    //Context.employees.Save(employeeModel);
+                    //return RedirectToAction("Index");
+                
                 return RedirectToAction("Index");
             }
             catch
             {
                 return View();
             }
+           
+            
         }
 
         // GET: Employee/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
-            return View();
+            var document = Context.employees.FindOneById(new ObjectId(id));
+            return View(document);
         }
 
         // POST: Employee/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(string id, EmployeeModel employeeModel)
         {
             try
             {
-                // TODO: Add delete logic here
+              
+                var employeeObjectId = Query<EmployeeModel>.EQ(p => p.ID, new ObjectId(id));
+                var collection = Context.employees;
+                var result = collection.Remove(employeeObjectId, RemoveFlags.Single);
 
                 return RedirectToAction("Index");
             }
